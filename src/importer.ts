@@ -12,11 +12,15 @@ type ParsedImportedFile = {
 
 export const IMPORT_HEADING_PREFIX = "Imported from private journal:";
 
+const DEFAULT_TAG = "journal";
+
 export function buildImportedMarkdown(
   isoDate: string,
   importedFiles: ImportedFileContent[],
+  resourceTagPath?: string,
 ): string {
-  const heading = `## ${IMPORT_HEADING_PREFIX} ${isoDate}`;
+  const tag = normalizeTag(resourceTagPath);
+  const heading = `## ${IMPORT_HEADING_PREFIX} ${isoDate} ${tag}`;
   const parsedFiles = importedFiles
     .map((file) => parseImportedFile(file))
     .sort(compareImportedFiles);
@@ -33,7 +37,21 @@ export function buildImportedMarkdown(
 }
 
 export function isExistingImportSection(line: string, isoDate: string): boolean {
-  return line === `## ${IMPORT_HEADING_PREFIX} ${isoDate}`;
+  return line.startsWith(`## ${IMPORT_HEADING_PREFIX} ${isoDate} `);
+}
+
+function normalizeTag(resourceTagPath: string | undefined): string {
+  const trimmed = resourceTagPath?.trim() ?? "";
+  if (trimmed.length === 0) {
+    return `#${DEFAULT_TAG}`;
+  }
+
+  const withoutHash = trimmed.replace(/^#+/, "").trim();
+  if (withoutHash.length === 0) {
+    return `#${DEFAULT_TAG}`;
+  }
+
+  return `#${withoutHash}`;
 }
 
 function compareImportedFiles(left: ParsedImportedFile, right: ParsedImportedFile): number {

@@ -8,10 +8,12 @@ import { expandHomePath, parseDateFromBasename } from "./core";
 
 interface JournalPluginSettings {
   journalDirectory: string;
+  tag: string;
 }
 
 const DEFAULT_SETTINGS: JournalPluginSettings = {
   journalDirectory: "~/.private-journal",
+  tag: "journal",
 };
 
 export default class JournalPlugin extends Plugin {
@@ -69,7 +71,7 @@ export default class JournalPlugin extends Plugin {
       return;
     }
 
-    const importSection = buildImportedMarkdown(isoDate, importedFiles);
+    const importSection = buildImportedMarkdown(isoDate, importedFiles, this.settings.tag);
     const existingContent = await this.app.vault.read(activeFile);
     const newContent = replaceImportSection(existingContent, importSection, isoDate);
 
@@ -117,6 +119,19 @@ class JournalSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.journalDirectory)
           .onChange(async (value) => {
             this.plugin.settings.journalDirectory = value;
+            await this.plugin.saveSettings();
+          }),
+      );
+
+    new Setting(containerEl)
+      .setName("Tag")
+      .setDesc("Tag added to the import heading (auto-prefixed with #)")
+      .addText((text) =>
+        text
+          .setPlaceholder("journal")
+          .setValue(this.plugin.settings.tag)
+          .onChange(async (value) => {
+            this.plugin.settings.tag = value;
             await this.plugin.saveSettings();
           }),
       );
