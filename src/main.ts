@@ -71,9 +71,9 @@ export default class JournalPlugin extends Plugin {
       return;
     }
 
-    const importSection = buildImportedMarkdown(isoDate, importedFiles, this.settings.tag);
+    const importSection = buildImportedMarkdown(importedFiles, this.settings.tag);
     const existingContent = await this.app.vault.read(activeFile);
-    const newContent = replaceImportSection(existingContent, importSection, isoDate);
+    const newContent = replaceImportSection(existingContent, importSection);
 
     await this.app.vault.modify(activeFile, newContent);
     new Notice(`Imported ${importedFiles.length} file(s) for ${isoDate}`);

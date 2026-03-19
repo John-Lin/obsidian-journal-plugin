@@ -4,29 +4,27 @@ import { replaceImportSection } from "./section-replacer";
 
 describe("replaceImportSection", () => {
   it("appends section when no existing import found", () => {
-    const existing = "# 2026-03-18\n\nSome notes";
-    const importSection = "## Imported from private journal: 2026-03-18\n\nhello";
+    const existing = "Some notes";
+    const importSection = "# Imported from private journal\n#journal\nhello";
 
-    const result = replaceImportSection(existing, importSection, "2026-03-18");
+    const result = replaceImportSection(existing, importSection);
 
     expect(result).toBe(
-      "# 2026-03-18\n\nSome notes\n\n## Imported from private journal: 2026-03-18\n\nhello",
+      "Some notes\n\n# Imported from private journal\n#journal\nhello",
     );
   });
 
   it("replaces existing import section", () => {
     const existing = [
-      "# 2026-03-18",
-      "",
       "Some notes",
       "",
-      "## Imported from private journal: 2026-03-18",
-      "",
+      "# Imported from private journal",
+      "#journal",
       "old content",
     ].join("\n");
-    const importSection = "## Imported from private journal: 2026-03-18\n\nnew content";
+    const importSection = "# Imported from private journal\n#journal\nnew content";
 
-    const result = replaceImportSection(existing, importSection, "2026-03-18");
+    const result = replaceImportSection(existing, importSection);
 
     expect(result).toContain("new content");
     expect(result).not.toContain("old content");
@@ -35,53 +33,49 @@ describe("replaceImportSection", () => {
 
   it("replaces section that spans until next same-level heading", () => {
     const existing = [
-      "# 2026-03-18",
-      "",
-      "## Imported from private journal: 2026-03-18",
-      "",
+      "# Imported from private journal",
+      "#journal",
       "old content",
       "",
-      "## Other section",
+      "# Other section",
       "",
       "keep this",
     ].join("\n");
-    const importSection = "## Imported from private journal: 2026-03-18\n\nnew content";
+    const importSection = "# Imported from private journal\n#journal\nnew content";
 
-    const result = replaceImportSection(existing, importSection, "2026-03-18");
+    const result = replaceImportSection(existing, importSection);
 
     expect(result).toContain("new content");
     expect(result).not.toContain("old content");
-    expect(result).toContain("## Other section");
+    expect(result).toContain("# Other section");
     expect(result).toContain("keep this");
   });
 
   it("preserves subsections within the replaced section", () => {
     const existing = [
-      "## Imported from private journal: 2026-03-18",
-      "",
-      "### 3:08 PM",
-      "",
+      "# Imported from private journal",
+      "#journal",
+      "## 3:08 PM — Context",
       "old sub content",
     ].join("\n");
     const importSection = [
-      "## Imported from private journal: 2026-03-18",
-      "",
-      "### 3:08 PM",
-      "",
+      "# Imported from private journal",
+      "#journal",
+      "## 3:08 PM — Context",
       "new sub content",
     ].join("\n");
 
-    const result = replaceImportSection(existing, importSection, "2026-03-18");
+    const result = replaceImportSection(existing, importSection);
 
     expect(result).toContain("new sub content");
     expect(result).not.toContain("old sub content");
   });
 
   it("appends to empty file", () => {
-    const importSection = "## Imported from private journal: 2026-03-18\n\nhello";
+    const importSection = "# Imported from private journal\n#journal\nhello";
 
-    const result = replaceImportSection("", importSection, "2026-03-18");
+    const result = replaceImportSection("", importSection);
 
-    expect(result).toBe("## Imported from private journal: 2026-03-18\n\nhello");
+    expect(result).toBe("# Imported from private journal\n#journal\nhello");
   });
 });

@@ -3,7 +3,6 @@ import { isExistingImportSection } from "./importer";
 export function replaceImportSection(
   existingContent: string,
   importSection: string,
-  isoDate: string,
 ): string {
   if (existingContent === "") {
     return importSection;
@@ -11,7 +10,7 @@ export function replaceImportSection(
 
   const lines = existingContent.split("\n");
   const sectionStart = lines.findIndex((line) =>
-    isExistingImportSection(line, isoDate),
+    isExistingImportSection(line),
   );
 
   if (sectionStart === -1) {
@@ -33,7 +32,7 @@ export function replaceImportSection(
 
 function findSectionEnd(lines: string[], sectionStart: number): number {
   for (let i = sectionStart + 1; i < lines.length; i++) {
-    if (/^## /.test(lines[i])) {
+    if (/^# [^#]/.test(lines[i])) {
       return i;
     }
   }

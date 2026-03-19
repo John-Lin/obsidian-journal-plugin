@@ -10,17 +10,16 @@ type ParsedImportedFile = {
   timestamp: number | null;
 };
 
-export const IMPORT_HEADING_PREFIX = "Imported from private journal:";
+export const IMPORT_HEADING = "# Imported from private journal";
 
 const DEFAULT_TAG = "journal";
 
 export function buildImportedMarkdown(
-  isoDate: string,
   importedFiles: ImportedFileContent[],
   resourceTagPath?: string,
 ): string {
   const tag = normalizeTag(resourceTagPath);
-  const header = `## ${IMPORT_HEADING_PREFIX} ${isoDate}\n${tag}`;
+  const header = `${IMPORT_HEADING}\n${tag}`;
   const parsedFiles = importedFiles
     .map((file) => parseImportedFile(file))
     .sort(compareImportedFiles);
@@ -34,8 +33,8 @@ export function buildImportedMarkdown(
   const sections = entrySections
     .map((section) => {
       const sectionHeading = section.heading
-        ? `### ${section.label} — ${section.heading}`
-        : `### ${section.label}`;
+        ? `## ${section.label} — ${section.heading}`
+        : `## ${section.label}`;
       return section.body
         ? `${sectionHeading}\n${section.body}`
         : sectionHeading;
@@ -45,8 +44,8 @@ export function buildImportedMarkdown(
   return `${header}\n${sections}`;
 }
 
-export function isExistingImportSection(line: string, isoDate: string): boolean {
-  return line === `## ${IMPORT_HEADING_PREFIX} ${isoDate}`;
+export function isExistingImportSection(line: string): boolean {
+  return line === IMPORT_HEADING;
 }
 
 function normalizeTag(resourceTagPath: string | undefined): string {
