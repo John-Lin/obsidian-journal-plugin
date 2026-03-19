@@ -7,22 +7,22 @@ import {
 } from "./importer";
 
 describe("buildImportedMarkdown", () => {
-  it("builds markdown with heading, tag, and single file content", () => {
+  it("places tag on its own line below heading", () => {
     const result = buildImportedMarkdown("2026-03-18", [
       { filename: "2026-03-18.md", content: "some notes" },
     ]);
 
     expect(result).toBe(
-      "## Imported from private journal: 2026-03-18 #journal\n\nsome notes",
+      "## Imported from private journal: 2026-03-18\n\n#journal\n\nsome notes",
     );
   });
 
-  it("uses custom tag in heading", () => {
+  it("uses custom tag below heading", () => {
     const result = buildImportedMarkdown("2026-03-18", [
       { filename: "2026-03-18.md", content: "test" },
     ], "custom-tag");
 
-    expect(result).toContain("## Imported from private journal: 2026-03-18 #custom-tag");
+    expect(result).toContain("## Imported from private journal: 2026-03-18\n\n#custom-tag");
   });
 
   it("normalizes tag with leading hash", () => {
@@ -30,7 +30,7 @@ describe("buildImportedMarkdown", () => {
       { filename: "2026-03-18.md", content: "test" },
     ], "#journal");
 
-    expect(result).toContain("## Imported from private journal: 2026-03-18 #journal");
+    expect(result).toContain("## Imported from private journal: 2026-03-18\n\n#journal");
   });
 
   it("strips frontmatter from file content", () => {
@@ -146,23 +146,16 @@ describe("buildImportedMarkdown", () => {
 });
 
 describe("isExistingImportSection", () => {
-  it("matches heading with date and tag", () => {
+  it("matches heading with date", () => {
     expect(isExistingImportSection(
-      "## Imported from private journal: 2026-03-18 #journal",
-      "2026-03-18",
-    )).toBe(true);
-  });
-
-  it("matches heading with custom tag", () => {
-    expect(isExistingImportSection(
-      "## Imported from private journal: 2026-03-18 #custom-tag",
+      "## Imported from private journal: 2026-03-18",
       "2026-03-18",
     )).toBe(true);
   });
 
   it("rejects different date", () => {
     expect(isExistingImportSection(
-      "## Imported from private journal: 2026-03-17 #journal",
+      "## Imported from private journal: 2026-03-17",
       "2026-03-18",
     )).toBe(false);
   });

@@ -20,7 +20,7 @@ export function buildImportedMarkdown(
   resourceTagPath?: string,
 ): string {
   const tag = normalizeTag(resourceTagPath);
-  const heading = `## ${IMPORT_HEADING_PREFIX} ${isoDate} ${tag}`;
+  const heading = `## ${IMPORT_HEADING_PREFIX} ${isoDate}\n\n${tag}`;
   const parsedFiles = importedFiles
     .map((file) => parseImportedFile(file))
     .sort(compareImportedFiles);
@@ -46,7 +46,7 @@ export function buildImportedMarkdown(
 }
 
 export function isExistingImportSection(line: string, isoDate: string): boolean {
-  return line.startsWith(`## ${IMPORT_HEADING_PREFIX} ${isoDate} `);
+  return line === `## ${IMPORT_HEADING_PREFIX} ${isoDate}`;
 }
 
 function normalizeTag(resourceTagPath: string | undefined): string {
