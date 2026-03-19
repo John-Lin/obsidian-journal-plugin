@@ -7,13 +7,13 @@ import {
 } from "./importer";
 
 describe("buildImportedMarkdown", () => {
-  it("places tag on its own line below heading", () => {
+  it("places tag on its own line below heading without blank line", () => {
     const result = buildImportedMarkdown("2026-03-18", [
       { filename: "2026-03-18.md", content: "some notes" },
     ]);
 
     expect(result).toBe(
-      "## Imported from private journal: 2026-03-18\n\n#journal\n\nsome notes",
+      "## Imported from private journal: 2026-03-18\n#journal\nsome notes",
     );
   });
 
@@ -22,7 +22,7 @@ describe("buildImportedMarkdown", () => {
       { filename: "2026-03-18.md", content: "test" },
     ], "custom-tag");
 
-    expect(result).toContain("## Imported from private journal: 2026-03-18\n\n#custom-tag");
+    expect(result).toContain("## Imported from private journal: 2026-03-18\n#custom-tag");
   });
 
   it("normalizes tag with leading hash", () => {
@@ -30,7 +30,7 @@ describe("buildImportedMarkdown", () => {
       { filename: "2026-03-18.md", content: "test" },
     ], "#journal");
 
-    expect(result).toContain("## Imported from private journal: 2026-03-18\n\n#journal");
+    expect(result).toContain("## Imported from private journal: 2026-03-18\n#journal");
   });
 
   it("strips frontmatter from file content", () => {

@@ -20,7 +20,7 @@ export function buildImportedMarkdown(
   resourceTagPath?: string,
 ): string {
   const tag = normalizeTag(resourceTagPath);
-  const heading = `## ${IMPORT_HEADING_PREFIX} ${isoDate}\n\n${tag}`;
+  const header = `## ${IMPORT_HEADING_PREFIX} ${isoDate}\n${tag}`;
   const parsedFiles = importedFiles
     .map((file) => parseImportedFile(file))
     .sort(compareImportedFiles);
@@ -28,7 +28,7 @@ export function buildImportedMarkdown(
   const entrySections = parsedFiles.flatMap((file) => buildEntrySections(file));
 
   if (entrySections.length === 1 && !entrySections[0].heading) {
-    return `${heading}\n\n${entrySections[0].body}`;
+    return `${header}\n${entrySections[0].body}`;
   }
 
   const sections = entrySections
@@ -37,12 +37,12 @@ export function buildImportedMarkdown(
         ? `### ${section.label} — ${section.heading}`
         : `### ${section.label}`;
       return section.body
-        ? `${sectionHeading}\n\n${section.body}`
+        ? `${sectionHeading}\n${section.body}`
         : sectionHeading;
     })
     .join("\n\n");
 
-  return `${heading}\n\n${sections}`;
+  return `${header}\n${sections}`;
 }
 
 export function isExistingImportSection(line: string, isoDate: string): boolean {
