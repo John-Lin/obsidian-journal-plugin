@@ -36,7 +36,7 @@ export function buildImportedMarkdown(
         ? `## ${section.label} — ${section.heading}`
         : `## ${section.label}`;
       return section.body
-        ? `${sectionHeading}\n${section.body}`
+        ? `${sectionHeading}\n\n${section.body}`
         : sectionHeading;
     })
     .join("\n\n");
