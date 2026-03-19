@@ -17,6 +17,7 @@ Without that prerequisite, there may be no `.private-journal` content to import.
 - Imports only the current daily note date (`YYYY-MM-DD`) from the configured directory
 - Supports both `YYYY-MM-DD*.md` and `YYYY-MM-DD/*.md` file structures
 - Converts entries into markdown sections with time labels when timestamps are available
+- Adds a configurable tag (default: `#journal`)
 - Re-importing replaces the existing import section with fresh content
 - Respects Obsidian's daily notes date format setting
 
@@ -36,19 +37,39 @@ Without that prerequisite, there may be no `.private-journal` content to import.
 
    This generates `dist/main.js`.
 
-3. In Obsidian, enable community plugins, then use `Load unpacked plugin` and select this project folder.
+3. Generate a minimal release package (recommended):
+
+   ```bash
+   npm run package:release
+   ```
+
+   This creates `release/` with only runtime files.
+
+4. In Obsidian, enable community plugins, then load the plugin from the project folder.
+
+## Install Without Marketplace
+
+1. Open this repository's `Releases` page on GitHub.
+2. Download `plugin-release.zip` from the latest release assets.
+3. Extract the ZIP into your vault's `.obsidian/plugins/obsidian-journal-plugin/` folder.
+4. In Obsidian, go to `Settings` -> `Community plugins` and enable `Journal`.
+
+To update, download the newest `plugin-release.zip`, replace the old files, and reload the plugin.
 
 ## Plugin Settings
 
 - `Journal directory`: path to the local journal directory. Supports `~` for home directory.
   - Default: `~/.private-journal`
+- `Tag`: tag text for imported heading. Plugin auto-prefixes `#`.
+  - Default: `journal`
+  - Example: `journal` (becomes `#journal`)
 
 ## Usage
 
 1. Open a daily note in Obsidian.
 2. Open the command palette (`Cmd+P` / `Ctrl+P`).
 3. Search for and run `Journal: Import journal`.
-4. The plugin appends an `## Imported from private journal: YYYY-MM-DD` section to the daily note.
+4. The plugin appends an `# Imported from private journal` section to the daily note.
 5. Running the command again on the same date replaces the previous import with fresh content.
 
 Note: Import runs only on daily notes. On non-daily-note files it will show an error.
