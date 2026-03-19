@@ -1,0 +1,26 @@
+{
+  "name": "obsidian-journal-plugin",
+  "version": "1.0.0",
+  "description": "Import daily private journal markdown into Obsidian daily notes",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --platform=node --format=cjs --target=es2020 --external:obsidian --outfile=dist/main.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "journal"
+  ],
+  "author": "John Lin",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.27.0",
+    "obsidian": "^1.8.7",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

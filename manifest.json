@@ -1,0 +1,8 @@
+{
+  "id": "obsidian-journal-plugin",
+  "name": "Journal",
+  "version": "1.0.0",
+  "minAppVersion": "0.16.0",
+  "author": "John Lin",
+  "description": "Import daily private journal markdown into Obsidian daily notes"
+}
