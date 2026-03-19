@@ -25,12 +25,21 @@ export function buildImportedMarkdown(
     .map((file) => parseImportedFile(file))
     .sort(compareImportedFiles);
 
-  if (parsedFiles.length === 1) {
-    return `${heading}\n\n${parsedFiles[0].body}`;
+  const entrySections = parsedFiles.flatMap((file) => buildEntrySections(file));
+
+  if (entrySections.length === 1 && !entrySections[0].heading) {
+    return `${heading}\n\n${entrySections[0].body}`;
   }
 
-  const sections = parsedFiles
-    .map((file) => `### ${file.label}\n\n${file.body}`)
+  const sections = entrySections
+    .map((section) => {
+      const sectionHeading = section.heading
+        ? `### ${section.label} — ${section.heading}`
+        : `### ${section.label}`;
+      return section.body
+        ? `${sectionHeading}\n\n${section.body}`
+        : sectionHeading;
+    })
     .join("\n\n");
 
   return `${heading}\n\n${sections}`;
@@ -146,6 +155,45 @@ function parseTimestamp(raw: string | undefined): number | null {
   }
 
   return parsed;
+}
+
+type EntrySection = {
+  label: string;
+  heading: string | null;
+  body: string;
+};
+
+function buildEntrySections(file: ParsedImportedFile): EntrySection[] {
+  const lines = file.body.split(/\r?\n/);
+  type RawSection = { heading: string | null; lines: string[] };
+  const sections: RawSection[] = [];
+  let current: RawSection = { heading: null, lines: [] };
+
+  for (const line of lines) {
+    const headingMatch = line.match(/^#{1,6}\s+(.+)$/);
+    if (headingMatch) {
+      if (current.heading !== null || current.lines.length > 0) {
+        sections.push(current);
+      }
+      current = { heading: headingMatch[1].trim(), lines: [] };
+      continue;
+    }
+    current.lines.push(line);
+  }
+
+  if (current.heading !== null || current.lines.length > 0) {
+    sections.push(current);
+  }
+
+  if (sections.length === 0) {
+    return [{ label: file.label, heading: null, body: "" }];
+  }
+
+  return sections.map((section) => ({
+    label: file.label,
+    heading: section.heading,
+    body: section.lines.join("\n").trim(),
+  }));
 }
 
 function resolveEntryLabel(filename: string, timestamp: number | null): string {

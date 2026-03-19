@@ -85,22 +85,63 @@ describe("buildImportedMarkdown", () => {
     expect(result).toContain("### 2026-03-18-b.md");
   });
 
-  it("omits subheading when there is only one file", () => {
+  it("merges original headings into entry labels", () => {
+    const result = buildImportedMarkdown("2026-03-18", [
+      {
+        filename: "2026-03-18/a.md",
+        content: "---\ntimestamp: 1710000000000\n---\n\n## User Context\n\nfirst\n\n## Technical Insights\n\nsecond",
+      },
+    ]);
+
+    expect(result).toMatch(/### \d{1,2}:\d{2}\s[AP]M — User Context/);
+    expect(result).toMatch(/### \d{1,2}:\d{2}\s[AP]M — Technical Insights/);
+    expect(result).toContain("first");
+    expect(result).toContain("second");
+    expect(result).not.toContain("## User Context");
+    expect(result).not.toContain("## Technical Insights");
+  });
+
+  it("omits subheading for single file without headings", () => {
+    const result = buildImportedMarkdown("2026-03-18", [
+      {
+        filename: "2026-03-18/a.md",
+        content: "---\ntimestamp: 1710000000000\n---\n\njust plain text",
+      },
+    ]);
+
+    expect(result).not.toContain("### ");
+    expect(result).toContain("just plain text");
+  });
+
+  it("shows time label for single file with headings", () => {
+    const result = buildImportedMarkdown("2026-03-18", [
+      {
+        filename: "2026-03-18/a.md",
+        content: "---\ntimestamp: 1710000000000\n---\n\n## Context\n\nsome text",
+      },
+    ]);
+
+    expect(result).toMatch(/### \d{1,2}:\d{2}\s[AP]M — Context/);
+    expect(result).toContain("some text");
+  });
+
+  it("uses filename labels for entries without timestamps", () => {
+    const result = buildImportedMarkdown("2026-03-18", [
+      { filename: "2026-03-18-a.md", content: "## Section\n\nalpha" },
+      { filename: "2026-03-18-b.md", content: "beta" },
+    ]);
+
+    expect(result).toContain("### 2026-03-18-a.md — Section");
+    expect(result).toContain("### 2026-03-18-b.md");
+  });
+
+  it("produces single section without subheading when one file has no headings", () => {
     const result = buildImportedMarkdown("2026-03-18", [
       { filename: "2026-03-18.md", content: "only one" },
     ]);
 
     expect(result).not.toContain("### ");
-  });
-
-  it("includes subheadings when there are multiple files", () => {
-    const result = buildImportedMarkdown("2026-03-18", [
-      { filename: "2026-03-18-a.md", content: "alpha" },
-      { filename: "2026-03-18-b.md", content: "beta" },
-    ]);
-
-    expect(result).toContain("### 2026-03-18-a.md");
-    expect(result).toContain("### 2026-03-18-b.md");
+    expect(result).toContain("only one");
   });
 });
 
