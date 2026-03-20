@@ -5,6 +5,6 @@
   "minAppVersion": "0.16.0",
   "author": "John Lin",
   "authorUrl": "https://github.com/John-Lin",
-  "description": "Import daily private journal markdown into Obsidian daily notes",
+  "description": "Import daily private journal markdown into daily notes.",
   "isDesktopOnly": true
 }
