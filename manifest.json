@@ -1,8 +1,10 @@
 {
-  "id": "obsidian-journal-plugin",
-  "name": "Journal",
+  "id": "ai-journal",
+  "name": "AI Journal",
   "version": "1.0.0",
   "minAppVersion": "0.16.0",
   "author": "John Lin",
-  "description": "Import daily private journal markdown into Obsidian daily notes"
+  "authorUrl": "https://github.com/John-Lin",
+  "description": "Import daily private journal markdown into Obsidian daily notes",
+  "isDesktopOnly": true
 }

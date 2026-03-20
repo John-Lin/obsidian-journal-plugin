@@ -1,4 +1,4 @@
-# Journal for Obsidian
+# AI Journal for Obsidian
 
 This plugin adds a command that imports daily markdown notes from a local directory (default: `~/.private-journal`) into your current Obsidian daily note.
 
@@ -51,8 +51,8 @@ Without that prerequisite, there may be no `.private-journal` content to import.
 
 1. Open this repository's `Releases` page on GitHub.
 2. Download `plugin-release.zip` from the latest release assets.
-3. Extract the ZIP into your vault's `.obsidian/plugins/obsidian-journal-plugin/` folder.
-4. In Obsidian, go to `Settings` -> `Community plugins` and enable `Journal`.
+3. Extract the ZIP into your vault's `.obsidian/plugins/ai-journal/` folder.
+4. In Obsidian, go to `Settings` -> `Community plugins` and enable `AI Journal`.
 
 To update, download the newest `plugin-release.zip`, replace the old files, and reload the plugin.
 
