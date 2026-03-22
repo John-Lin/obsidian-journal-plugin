@@ -1,4 +1,4 @@
-import { Notice, Plugin, PluginSettingTab, App, Setting, TFile } from "obsidian";
+import { Editor, MarkdownFileInfo, MarkdownView, Notice, Plugin, PluginSettingTab, App, Setting, TFile } from "obsidian";
 import { homedir } from "os";
 
 import { loadDailyMarkdownFiles } from "./file-loader";
@@ -25,7 +25,8 @@ export default class JournalPlugin extends Plugin {
     this.addCommand({
       id: "import-journal",
       name: "Import journal",
-      callback: () => this.importJournal(),
+      editorCallback: (editor: Editor, ctx: MarkdownView | MarkdownFileInfo) =>
+        this.importJournal(editor, ctx),
     });
 
     this.addSettingTab(new JournalSettingTab(this.app, this));
@@ -39,8 +40,11 @@ export default class JournalPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  private async importJournal(): Promise<void> {
-    const activeFile = this.app.workspace.getActiveFile();
+  private async importJournal(
+    editor: Editor,
+    ctx: MarkdownView | MarkdownFileInfo,
+  ): Promise<void> {
+    const activeFile = ctx.file;
     if (!activeFile) {
       new Notice("No active file open");
       return;
@@ -72,10 +76,10 @@ export default class JournalPlugin extends Plugin {
     }
 
     const importSection = buildImportedMarkdown(importedFiles, this.settings.tag);
-    const existingContent = await this.app.vault.read(activeFile);
+    const existingContent = editor.getValue();
     const newContent = replaceImportSection(existingContent, importSection);
 
-    await this.app.vault.modify(activeFile, newContent);
+    editor.setValue(newContent);
     new Notice(`Imported ${importedFiles.length} file(s) for ${isoDate}`);
   }
 
