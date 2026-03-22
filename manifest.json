@@ -2,7 +2,7 @@
   "id": "ai-journal",
   "name": "AI Journal",
   "version": "1.0.0",
-  "minAppVersion": "1.0.0",
+  "minAppVersion": "1.12.4",
   "author": "John Lin",
   "authorUrl": "https://github.com/John-Lin",
   "description": "Import daily private journal markdown into daily notes.",
